@@ -14,6 +14,7 @@ android {
         versionName "2.7.7"
 
         ndk {
+            moduleName "exec"
             abiFilters 'armeabi-v7a'//,'x86', 'x86_64'
         }
     }
@@ -30,7 +31,7 @@ android {
     sourceSets {
         main {
             jni.srcDirs=[]
-            jniLibs.srcDirs 'src/main/libs' //so out path
+            jniLibs.srcDirs 'src/main/libs' //so dir
         }
     }
 
@@ -59,9 +60,8 @@ dependencies {
 }
 
 
-
 task ndkBuild(type:Exec){
-    workingDir file('src/main/jni') //指明jni文件夹在哪里
+    workingDir file('src/main/jni') //jni dir
     commandLine getNdkBuildCmd(), 'V=1'
 }
 
@@ -71,11 +71,11 @@ tasks.withType(JavaCompile){
 }
 
 
+
 task cleanJni(type:Exec){
     workingDir file('src/main/jni')
     commandLine getNdkBuildCmd(), 'clean'
 }
-
 
 clean.dependsOn cleanJni
 
