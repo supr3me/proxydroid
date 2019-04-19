@@ -14,7 +14,6 @@ android {
         versionName "2.7.7"
 
         ndk {
-            moduleName "exec"
             abiFilters 'armeabi-v7a'//,'x86', 'x86_64'
         }
     }
@@ -31,7 +30,7 @@ android {
     sourceSets {
         main {
             jni.srcDirs=[]
-            jniLibs.srcDirs 'src/main/libs' //指定lib的目录
+            jniLibs.srcDirs 'src/main/libs' //so out path
         }
     }
 
@@ -59,34 +58,28 @@ dependencies {
     compile 'org.mozilla:rhino:1.7R2_android'
 }
 
-/*
-    定义编译任务
-    type:Exec 可以理解为这个task继承自Exec类型的task
-*/
+
 
 task ndkBuild(type:Exec){
     workingDir file('src/main/jni') //指明jni文件夹在哪里
     commandLine getNdkBuildCmd(), 'V=1'
 }
-/*
-    在tasks任务集合中，找到javaComile类型的即编译java代码的任务，
-    对其添加依赖，先执行编译jni的任务
-*/
+
 
 tasks.withType(JavaCompile){
     compileTask -> compileTask.dependsOn ndkBuild
 }
 
-/*添加clean*/
 
 task cleanJni(type:Exec){
     workingDir file('src/main/jni')
     commandLine getNdkBuildCmd(), 'clean'
 }
-/*让默认的clean任务依赖于cleanJni*/
+
+
 clean.dependsOn cleanJni
 
-/*获取NDK路径*/
+
 
 def getNdkPath (){
     Properties properties = new Properties()
